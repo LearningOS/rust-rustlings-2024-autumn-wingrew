@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -35,7 +35,9 @@ impl<T> Default for LinkedList<T> {
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T> LinkedList<T> 
+{
+    
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,15 +71,50 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
+  
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+	where
+    T: PartialOrd + Copy,
+    {
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut new_list = LinkedList::new();
+        
+        let mut a = 0;
+        let mut b = 0;
+
+        let mut a_val = list_a.get(a);
+        let mut b_val = list_b.get(b);
+
+        while a_val.is_some() || b_val.is_some() {
+            match (a_val, b_val) {
+                (Some(&ref a_v), Some(&ref b_v)) => {
+                    if a_v < b_v {
+                        new_list.add(*a_v);
+                        a += 1;
+                        a_val = list_a.get(a);
+                    } else {
+                        new_list.add(*b_v);
+                        b += 1;
+                        b_val = list_b.get(b);
+                    }
+                }
+                (Some(&ref a_v), None) => {
+                    new_list.add(*a_v);
+                    a += 1;
+                    a_val = list_a.get(a);
+                }
+                (None, Some(&ref b_v)) => {
+                    new_list.add(*b_v);
+                    b += 1;
+                    b_val = list_b.get(b);
+                }
+                (None, None) => break,
+            }
         }
+
+        new_list
 	}
+
 }
 
 impl<T> Display for LinkedList<T>
